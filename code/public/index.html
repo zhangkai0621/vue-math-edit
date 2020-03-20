@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title>数学编辑器</title>
+    <script type="text/javascript" 
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+
+    <script type="text/x-mathjax-config">
+        if(MathJax){
+          MathJax.Hub.Config({
+            jax: ["input/TeX","output/HTML-CSS", "output/PreviewHTML"],  //输出格式配置：latex 解析为 DOM结构
+            tex2jax: {
+              inlineMath: [['$','$']],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+            },
+            "HTML-CSS": {
+              showMathMenu: false,            // 隐藏右键菜单展示
+              linebreaks: {
+                automatic: true,  //超长公式换行处理（默认是false不换行）
+                width: "80%"      //设置换行的点，默认是遇到等号=换行
+              } 
+            },
+          });
+        }
+    </script>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
