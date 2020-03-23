@@ -2,7 +2,7 @@
  * @Description: 数学公式编辑器
  * @Author: zhangkai
  * @Date: 2020-03-13 14:27:26
- * @LastEditTime: 2020-03-20 17:32:18
+ * @LastEditTime: 2020-03-23 20:33:13
  * @LastEditors: zhangkai
  -->
 <template>
@@ -11,10 +11,12 @@
             <el-col :span="12">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="数学公式" name="first">
-                    <div class="tools-bar">
-                        <div v-for="(item, index) in toolsList" :key="index"  @click="selectTools(item.type)">{{item.name}}</div>
-                    </div>
-                    <el-input type="textarea" v-model="content" class="math-content" @keyup.native="referHTML"></el-input>
+                     <el-button type="primary" @click="dialogVisible = true">选择公式</el-button>
+                    <el-input 
+                        type="textarea" 
+                        v-model="content" 
+                        class="math-content" 
+                        @keyup.native="referHTML"></el-input>
                 </el-tab-pane>
                 <el-tab-pane label="语文拼音" name="second">语文拼音</el-tab-pane>
             </el-tabs>
@@ -27,59 +29,76 @@
         <button @click="referHTML">刷新</button>
         <button @click="reset">重置</button>
 
-
-
         <el-dialog
             title="提示"
             :visible.sync="dialogVisible"
-            width="30%">
-            <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item :label="form.firstLable">
-                    <el-input v-model="form.firstValue"></el-input>
-                </el-form-item>
-                <el-form-item :label="form.secondLable">
-                    <el-input v-model="form.secondValue"></el-input>
-                </el-form-item>
-            </el-form>
+            @close="dialogClose"
+            width="50%">
+            <div v-for="(item, index) in data" :key="index">
+                <!-- 工具栏 -->
+                <div class="tools-bar">
+                    <div v-for="(tool, i) in toolsList" :key="i"  @click="selectTools(tool, index)">{{tool.name}}</div>
+                </div>
+                <!-- 输入框 -->
+                <el-form ref="form" label-width="80px">
+                    <el-form-item :label="item.firstLable">
+                        <el-input v-model="item.firstValue"></el-input>
+                        <el-button type="info" @click="insideInput('firstValue', index)">嵌套输入</el-button>
+                    </el-form-item>
+                    <el-form-item :label="item.secondLable" v-if="item.isShowSecond">
+                        <el-input v-model="item.secondValue"></el-input>
+                        <el-button type="info" @click="insideInput('secondValue', index)">嵌套输入</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            
             <el-button type="primary" @click="confirmContent">确定</el-button>
         </el-dialog>
     </div>
 </template>
 <script>
+import toolBar from '../components/HelloWorld.vue'
 export default {
+    components: {
+        toolBar,
+    },
     data () {
         return {
             activeName: 'first',
-            
             dialogVisible: false,
             content: '',
-            form: {
-                firstLable: '',
-                firstValue: '',
-                secondLable: '',
-                secondValue: '',
-            }, 
-            currentContent: '', // 当前处理的数据
-            currentKey: '', // 当前关键字
-            type: 'fs', // fs 分数，gh 根号
+            data: [
+                {
+                    type: '', // 类型
+                    firstLable: '', 
+                    firstValue: '', // 第一个值
+                    secondLable: '', 
+                    secondValue: '', // 第二个值
+                    isShowSecond: true, // 是否显示第二个值
+                    nest: '', // 嵌套位置
+            },
+            ],
+            index: 0, // 当前点击的选项
+            currentString: '',
+
             toolsList: [
                 { type: 'math', name: '表达式' },
-                { type: '\\frac', name: '分数' },
-                { type: '\\sqrt', name: '根号' },
-                { type: '+', name: '加' },
-                { type: '-', name: '减' },
-                { type: '\\times', name: '乘' },
-                { type: '\\div', name: '除' },
-                { type: '=', name: '等于' },
-                { type: '\\lt', name: '小于' },
-                { type: '\\gt', name: '大于' },
-                { type: '\\leq', name: '小于等于' },
-                { type: '\\geq', name: '大于等于' },
-                { type: '\\neq', name: '不等于' },
-                { type: '\\pm', name: '加减' },
-                { type: '^', name: '平方' },
-                { type: '\\vert', name: '绝对值' },
-                { type: '^\\circ', name: '角度' },
+                { type: '\\frac', name: '分数', firstLable: '分子', secondLable: '分母', isShowSecond: true},
+                { type: '\\sqrt', name: '开方', firstLable: '开方数', secondLable: '被开方数', isShowSecond: true},
+                { type: '+', name: '加' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '-', name: '减' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '\\times', name: '乘' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '\\div', name: '除' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '=', name: '等于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '\\lt', name: '小于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '\\gt', name: '大于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '\\leq', name: '小于等于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '\\geq', name: '大于等于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '\\neq', name: '不等于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '\\pm', name: '加减' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
+                { type: '^', name: '平方' , firstLable: '底数', secondLable: '指数' , isShowSecond: true},
+                { type: '\\vert', name: '绝对值' ,firstLable: '数值', secondLable: '' , isShowSecond: false},
+                { type: '^\\circ', name: '角度' , firstLable: '数值' , secondLable: '' ,isShowSecond: false},
                 { type: '\\pi', name: 'π' },
                 { type: 'br', name: '换行' },
             ]
@@ -101,72 +120,70 @@ export default {
         handleClick(tab, event) {
             // console.log(tab, event);
         },
-        selectTools(type) {
-            
-            switch(type) {
-                case 'math': 
-                    this.content += ` $  $ `;
-                    break;
-                case '\\frac':  // 分号
-                    this.dialogVisible = true;
-                    this.form.firstLable = '分子';
-                    this.form.secondLable = '分母';
-                    this.type = 'fs';
-                    this.currentKey = type;
-                    break;
-                case '\\sqrt': // 根号
-                    this.dialogVisible = true;
-                    this.form.firstLable = '开方数';
-                    this.form.secondLable = '被开方数';
-                    this.type = 'gh';
-                    this.currentKey = type;
-                    break;
-                case '^': // 平方
-                    this.dialogVisible = true;
-                    this.form.firstLable = '底数';
-                    this.form.secondLable = '指数';
-                    this.type = 'pf';
-                    this.currentKey = type;
-                    break;
-                case '\\vert': // 绝对值
-
-                    this.content += ` $ \\vert{2}\\vert $ `;
-                    break;
-                case 'br': // 换行
-                    this.content += `<br>`;
-                    break;
-                case '^\\circ': // 角度
-                    this.dialogVisible = true;
-                    this.form.firstLable = '角度';
-                    this.type = 'jd';
-                    this.currentKey = type;
-                    break;
-                default : // 默认
-                    this.content += ` $${type}$ `
-                    break;
-            }
+        // 获取公式类型
+        selectTools(content, index) {
+            this.dialogVisible = true;
+            this.data[index].type = content.type;
+            this.data[index].firstLable = content.firstLable;
+            this.data[index].secondLable = content.secondLable;
+            this.data[index].isShowSecond = content.isShowSecond;
+        },
+        // 嵌套输入
+        // type 第几个输入框
+        // index 第几项
+        insideInput(type, index) {
+            this.data.push({ type: '', firstLable: '', firstValue: '', secondLable: '', secondValue: '', isShowSecond: true, nest:''});
+            this.data[index].nest = type;
         },
         // 确定选择
         confirmContent() {
-            switch (this.type) {
-                case 'fs': 
-                    this.currentContent = `$${this.currentKey}{${this.form.firstValue}}{${this.form.secondValue}}$`;
-                    break;
-                case 'gh': 
-                    this.form.firstValue = this.form.firstValue == 2 ? '' : this.form.firstValue;
-                    this.currentContent = `$${this.currentKey}[${this.form.firstValue}]{${this.form.secondValue}}$`;
-                    break;
-                case 'pf': 
-                    this.currentContent = `$ {${this.form.firstValue}}${this.currentKey}{${this.form.secondValue}}$`;
-                    break;
-                case 'jd': 
-                    this.currentContent = `$ {${this.form.firstValue}}${this.currentKey}$`;
+            // 具有嵌套
+            // 从上往下遍历拼凑数据，遍历嵌套的部分
+            for (let i = this.data.length - 1; i > 0; i--) {
+                let nest = this.data[i - 1].nest;
+                let type = this.data[i].type; // 公式类型
+                let firstValue = this.data[i].firstValue;
+                let secondValue = this.data[i].isShowSecond ? this.data[i].secondValue : '';
+                this.data[i - 1][nest] = this.getValue(type, firstValue, secondValue)
             }
-            this.content += this.currentContent;
-            this.currentContent = '';
-            this.form.firstValue = '';
-            this.form.secondValue = '';
+            let nest = this.data[0].nest;
+            let type = this.data[0].type; // 公式类型
+            let firstValue = this.data[0].firstValue;
+            let secondValue = this.data[0].isShowSecond ? this.data[0].secondValue : '';
+            // this.data[0][nest] = this.getValue(type, firstValue, secondValue)
+            
+            this.currentString = this.getValue(type, firstValue, secondValue);
+            console.log('data', this.data);
+            this.content += `$${this.currentString}$`;
+            this.dialogClose();
+        },
+        // 获取值
+        getValue(type, firstValue, secondValue) {
+            switch(type) {
+                case '\\frac': // 分数
+                    return `${type}{${firstValue}}{${secondValue}}`;
+                    break;
+                case '\\sqrt': // 开方
+                    return `${type}[${firstValue}]{${secondValue}}`;
+                    console.log('开方', this.data[i - 1][nest]);
+
+                    break;
+                case '^\\circ': // 角度
+                    return `${firstValue}${type}`;
+                    break;
+                case '\\vert': // 绝对值
+                    return `${type}${firstValue}${type}`;
+                    break;
+                default: 
+                    return `{${firstValue}}${type}{${secondValue}}`;
+                    break;
+            }
+
+        },
+        dialogClose() {
             this.dialogVisible = false;
+            this.currentString = '';
+            this.data = [{type: '', firstLable: '', firstValue: '', secondLable: '', secondValue: '', isShowSecond: true, nest:''}];
         },
         // 刷新数据
         referHTML() {
@@ -183,7 +200,7 @@ export default {
     },
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
     .math-edit {
         .tools-bar {
             width: 100%;
@@ -192,6 +209,7 @@ export default {
             display: flex;
             align-items: center;
             flex-wrap: wrap;
+            margin: 20px 0;
             >div {
                 padding: 2px 10px;
                 margin: 10px;
@@ -211,6 +229,13 @@ export default {
             font-size: 18px;
             padding: 10px 20px;
         }
+        .el-form-item__content {
+            display: flex;
+            justify-content: space-between;
+            .el-input {
+                width: 60%;
+            }
+        }
     }
 
     /* MathJax v2.7.5 from 'cdnjs.cloudflare.com' */
@@ -221,4 +246,5 @@ export default {
         overflow-x: auto;
         overflow-y: hidden;
     }
+    
 </style>
