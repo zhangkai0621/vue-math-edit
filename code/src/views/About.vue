@@ -2,32 +2,40 @@
  * @Description: 数学公式编辑器
  * @Author: zhangkai
  * @Date: 2020-03-13 14:27:26
- * @LastEditTime: 2020-03-23 20:33:13
+ * @LastEditTime: 2020-03-24 20:12:17
  * @LastEditors: zhangkai
  -->
 <template>
     <div class="math-edit">
         <el-row>
-            <el-col :span="12">
-                <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-col :span="14">
+                <el-tabs v-model="activeName" @tab-click="handleClick" >
                 <el-tab-pane label="数学公式" name="first">
                      <el-button type="primary" @click="dialogVisible = true">选择公式</el-button>
+                     <!-- 工具栏 -->
+                    <div class="tools-bar">
+                        <div v-for="(tool, i) in commTools" :key="i"  @click="chooseTool(tool, index)">{{tool.name}}</div>
+                    </div>
                     <el-input 
                         type="textarea" 
                         v-model="content" 
                         class="math-content" 
-                        @keyup.native="referHTML"></el-input>
+                        ></el-input>
                 </el-tab-pane>
-                <el-tab-pane label="语文拼音" name="second">语文拼音</el-tab-pane>
+                <el-tab-pane label="语文拼音" name="second">
+                    <pinyinTable @getPinyin="getPinyin"></pinyinTable>
+                </el-tab-pane>
             </el-tabs>
             </el-col>
-            <el-col :span="12" class="review">
+            <el-col :span="10" class="review">
                 预览区
                 <div class="review-content" v-html="content"></div>
             </el-col>
         </el-row>
         <button @click="referHTML">刷新</button>
         <button @click="reset">重置</button>
+        <button @click="createWord">生成word</button>
+        <a :href="downHref" download="123.txt" id="download" style="display: none;">点击下载</a>
 
         <el-dialog
             title="提示"
@@ -40,7 +48,7 @@
                     <div v-for="(tool, i) in toolsList" :key="i"  @click="selectTools(tool, index)">{{tool.name}}</div>
                 </div>
                 <!-- 输入框 -->
-                <el-form ref="form" label-width="80px">
+                <el-form ref="form"  v-show="item.type.length">
                     <el-form-item :label="item.firstLable">
                         <el-input v-model="item.firstValue"></el-input>
                         <el-button type="info" @click="insideInput('firstValue', index)">嵌套输入</el-button>
@@ -57,10 +65,10 @@
     </div>
 </template>
 <script>
-import toolBar from '../components/HelloWorld.vue'
+import pinyinTable from '../components/pinyin-table.vue';
 export default {
     components: {
-        toolBar,
+        pinyinTable
     },
     data () {
         return {
@@ -80,27 +88,38 @@ export default {
             ],
             index: 0, // 当前点击的选项
             currentString: '',
+            downHref: '', // 下载地址
+
+            // 普通数学工具
+            commTools: [
+                { type: '  ', name: '表达式' },
+                { type: '+', name: '加' },
+                { type: '-', name: '减' },
+                { type: '\\times', name: '乘' },
+                { type: '\\div', name: '除' },
+                { type: '=', name: '等于' },
+                { type: '\\lt', name: '小于' },
+                { type: '\\gt', name: '大于' },
+                { type: '\\leq', name: '小于等于' },
+                { type: '\\geq', name: '大于等于' },
+                { type: '\\neq', name: '不等于' },
+                { type: '\\pm', name: '加减' },
+                { type: '\\pi', name: 'π' },
+                { type: '\\bigodot', name: '圆' },
+                { type: '\\because', name: '因为' },
+                { type: '\\therefore', name: '所以' },
+                { type: '\\triangle', name: '三角形' },
+                { type: '<br>', name: '换行' },
+            ],
 
             toolsList: [
-                { type: 'math', name: '表达式' },
                 { type: '\\frac', name: '分数', firstLable: '分子', secondLable: '分母', isShowSecond: true},
                 { type: '\\sqrt', name: '开方', firstLable: '开方数', secondLable: '被开方数', isShowSecond: true},
-                { type: '+', name: '加' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '-', name: '减' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '\\times', name: '乘' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '\\div', name: '除' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '=', name: '等于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '\\lt', name: '小于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '\\gt', name: '大于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '\\leq', name: '小于等于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '\\geq', name: '大于等于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '\\neq', name: '不等于' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
-                { type: '\\pm', name: '加减' , firstLable: '前一位数', secondLable: '后一位数' , isShowSecond: true},
                 { type: '^', name: '平方' , firstLable: '底数', secondLable: '指数' , isShowSecond: true},
+                { type: '_', name: '下标' , firstLable: '正常值', secondLable: '角标值' , isShowSecond: true},
                 { type: '\\vert', name: '绝对值' ,firstLable: '数值', secondLable: '' , isShowSecond: false},
                 { type: '^\\circ', name: '角度' , firstLable: '数值' , secondLable: '' ,isShowSecond: false},
-                { type: '\\pi', name: 'π' },
-                { type: 'br', name: '换行' },
+                { type: 'cases', name: '方程组' , firstLable: '第一个方程' , secondLable: '第二个方程' ,isShowSecond: true},
             ]
         }
     },
@@ -119,6 +138,25 @@ export default {
     methods: {
         handleClick(tab, event) {
             // console.log(tab, event);
+            this.content = '';
+        },
+        // 选择工具
+        chooseTool(content, index) {
+            switch(content.type) {
+                case '<br>': 
+                    this.content += ` ${content.type} `;
+                    break;
+                case '\\triangle': // 三角形
+                    this.content += ` $${content.type} ABC$ `;
+                    break;
+                case '\\bigodot':  // 圆
+                    this.content += ` $${content.type} P$ `;
+                    break;
+                default: 
+                    this.content += ` $${content.type}$ `;
+                    break;
+            }
+            
         },
         // 获取公式类型
         selectTools(content, index) {
@@ -178,7 +216,6 @@ export default {
                     return `{${firstValue}}${type}{${secondValue}}`;
                     break;
             }
-
         },
         dialogClose() {
             this.dialogVisible = false;
@@ -196,11 +233,45 @@ export default {
         reset() {
             this.content = '';
         },
-        
+        // 生成 word
+        createWord() {
+           
+            this.$axios({
+                method: "post",
+                //headers: { "content-type": "application/x-www-form-urlencoded" },//局部更改
+                url: "http://192.168.0.225:3000/mathjax",
+                type: 'json',
+                params: {
+                    'mathString': this.content
+                }
+            }).then(res => {
+                this.downHref = 'http://192.168.0.225:3000' + res.data.url;
+                document.getElementById('download').click();
+            });
+        },
+
+        // ------------------------------------语文---------------------------------
+        // 获取拼音数据
+        getPinyin(value) {
+            let pinyin = value.pinyin;
+            let word = value.word;
+            this.content += `<div class='chinese'>
+                <span class='pinyin'>${pinyin}</span>
+                <span class='word'>${word}
+                    <span class='border-dashed-across'></span>
+                    <span class='border-dashed-vertical'></span>
+                </span>
+                
+            </div>`
+        }
     },
 }
 </script>
 <style lang="scss">
+    @font-face { 
+        font-family: KT; /*这里是说明调用来的字体名字*/ 
+        src: url('../assets/font/hanyiKaiTi.ttf'); /*这里是字体文件路径*/ 
+    }
     .math-edit {
         .tools-bar {
             width: 100%;
@@ -224,11 +295,72 @@ export default {
         .math-content {
             margin-top: 20px;
             font-size: 18px;
+            textarea {
+                min-height: 200px !important;
+            }
         }
-        .review-content {
-            font-size: 18px;
-            padding: 10px 20px;
+        .review {
+            .review-content {
+                font-size: 18px;
+                padding: 10px 20px;
+                display: flex;
+
+            }
+            .chinese {
+                width: 70px;
+                height: 100px;
+                background: #e1e1e1;
+                margin: 0 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                
+                span.pinyin {
+                    width: 100%;
+                    height: 30px;
+                    text-align: center;
+                    border: 1px solid #999;
+                    border-bottom: none;
+                    user-select: none;
+                }
+                span.word {
+                    width: 100%;
+                    height: 70px;
+                    line-height: 70px;
+                    background: #fff;
+                    color: #333;
+                    font-size: 52px;
+                    text-align: center;
+                    border: 1px solid #C75252;
+                    font-family: KT !important;
+                    user-select: none;
+                    position: relative;
+                    // 横线
+                
+                    .border-dashed-across {
+                        display: inline-block;
+                        width: 100%;
+                        height: 1px;
+                        border-top: 1px dashed #C75252;
+                        position: absolute;
+                        top: 50%;
+                        left: 0;
+                    }
+                    // 竖线
+                    .border-dashed-vertical {
+                        display: inline-block;
+                        width: 1px;
+                        height: 70px;
+                        border-left: 1px dashed #C75252;
+                        position: absolute;
+                        top: 0;
+                        left: 50%;
+                    }
+                }
+            }
         }
+        
         .el-form-item__content {
             display: flex;
             justify-content: space-between;
