@@ -90,7 +90,7 @@
                 kfe.execCommand('get.image.data', function(data){
                     var latex = kfe.execCommand('get.source');
                     // editor.execCommand('inserthtml', '<img class="kfformula" src="'+ data.img +'" data-latex="' + latex + '" />');
-					editor.execCommand('inserthtml', '<span>$' + latex + '$</span>');
+					editor.execCommand('inserthtml', '<span>' + latex + '</span>');
                     dialog.close();
                 });
 
