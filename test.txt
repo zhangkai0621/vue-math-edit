@@ -1,0 +1,27 @@
+25.（2019年长沙T25）已知抛物线 $ y= $ ${-2x}^{2}$ $+$  $ (b - 2)x + (c - 2020)(b,c为常数) $  <br> 
+（1）若抛物线的顶点坐标为 $ (1,1) $ ，求 $ b,c $ 的值 <br> 
+（2）若抛物线上始终存在不重合的两点关于原点对称，求 $  c$ 的取值范围 <br> 
+（3）在（1）的条件下，存在正实数 $m, n(m < n)  $，当  $ m $  $\leq$  $ x $  $\leq$  $ n $ 时，恰好有$\frac{m}{2m+1}$ $\leq$ $\frac{1}{y+2}$ $\leq$  $\frac{n}{2n+1}$，求 $ m,n $ 的值.
+
+
+
+
+ $ \bigodot P  \because \therefore \triangle  ABC  $ 
+
+
+ $$\begin{cases}
+a_1x+b_1y+c_1z=d_1\\
+a_2x+b_2y+c_2z=d_2\\
+a_3x+b_3y+c_3z=d_3\\
+\end{cases}
+$$
+
+ <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+   <mi>E</mi>
+   <mo>=</mo>
+   <mi>m</mi>
+   <msup>
+     <mi>c</mi>
+     <mn>2</mn>
+   </msup>
+ </math>

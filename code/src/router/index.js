@@ -5,12 +5,19 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/Home',
     name: 'Home',
     component: function () {
-        return import(/* webpackChunkName: "about" */ '../views/About.vue')
+        return import('../views/About.vue')
     }
   },
+  {
+      path: '/UEditor',
+      name: 'UEditor',
+      component: () => {
+          return import ('../views/UEditor.vue')
+      }
+  }
 ]
 
 const router = new VueRouter({
