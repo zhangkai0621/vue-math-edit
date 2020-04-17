@@ -2,7 +2,7 @@
  * @Description: UEditor 公式编辑器
  * @Author: zhangkai
  * @Date: 2020-04-09 09:49:47
- * @LastEditTime: 2020-04-17 11:25:38
+ * @LastEditTime: 2020-04-17 11:44:12
  * @LastEditors: zhangkai
  -->
 <template>
@@ -35,8 +35,8 @@
         
         methods: {
             refreshReview() {
-                if (this.editorContent) {
-                    this.content = this.editorContent.innerHTML;
+                if (this.editorContainer) {
+                    this.content = this.editorContainer.innerHTML;
                     this.$nextTick(() => {
                         const element = document.getElementById('reviewText');
                         window.MathJax && window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, element], () => {
@@ -50,7 +50,6 @@
                 this.editorLoading = true;
                 setTimeout(() => {
                     this.editorContainer = document.getElementById('ueditor_0').contentWindow.document.querySelector('body.view');
-                    this.editorContent = document.getElementById('ueditor_0').contentWindow.document.querySelector('body.view>p');
                     this.editorLoading = false;
                     this.editorContainer.addEventListener('keyup', () => {
                         this.$nextTick(() => {
