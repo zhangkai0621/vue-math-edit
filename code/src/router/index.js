@@ -5,13 +5,6 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/Home',
-    name: 'Home',
-    component: function () {
-        return import('../views/About.vue')
-    }
-  },
-  {
       path: '/',
       name: 'UEditor',
       component: () => {
