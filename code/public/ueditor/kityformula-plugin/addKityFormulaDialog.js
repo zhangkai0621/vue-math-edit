@@ -69,6 +69,5 @@ UE.registerUI('kityformula', function(editor, uiname){
 
     return kfBtn;
 
-
 });
 

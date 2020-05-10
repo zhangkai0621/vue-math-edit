@@ -12,7 +12,7 @@ const routes = [
     }
   },
   {
-      path: '/UEditor',
+      path: '/',
       name: 'UEditor',
       component: () => {
           return import ('../views/UEditor.vue')

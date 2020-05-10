@@ -2,7 +2,7 @@
  * @Description: 数学公式编辑器
  * @Author: zhangkai
  * @Date: 2020-03-13 14:27:26
- * @LastEditTime: 2020-03-24 20:12:17
+ * @LastEditTime: 2020-05-10 10:19:39
  * @LastEditors: zhangkai
  -->
 <template>
@@ -65,7 +65,7 @@
     </div>
 </template>
 <script>
-import pinyinTable from '../components/pinyin-table.vue';
+import pinyinTable from '../components/pinyinTable.vue';
 export default {
     components: {
         pinyinTable

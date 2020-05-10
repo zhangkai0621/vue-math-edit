@@ -1,4 +1,10 @@
-import { log } from 'util';
+<!--
+ * @Description: 拼音编辑
+ * @Author: zhangkai
+ * @Date: 2020-04-20 08:58:52
+ * @LastEditTime: 2020-05-08 16:51:47
+ * @LastEditors: zhangkai
+ -->
 <!--
     @Description: 拼音列表
     @author Zhang kai
@@ -7,12 +13,8 @@ import { log } from 'util';
 <template>
     <div>
         <el-row class="input" type="flex" align="center">
-            <el-col :span="4">当前拼音：</el-col>
-            <el-col :span="8"><el-input v-model="pinyin"></el-input></el-col>
-        </el-row>
-        <el-row class="input" type="flex" align="center">
-            <el-col :span="4">当前汉字：</el-col>
-            <el-col :span="8"><el-input v-model="word"></el-input></el-col>
+            <el-col :span="2">当前拼音：</el-col>
+            <el-col :span="8"><el-input v-model="inputValue"></el-input></el-col>
         </el-row>
         <table class="sel-table">
             <colgroup>
@@ -60,6 +62,18 @@ import { log } from 'util';
 <script>
     export default {
         name:'pinyinTable',
+        props: {
+            focusList: {
+                type: Object,
+                default: () => {
+                    return {}
+                }
+            },
+            isPinYinTableShow: { // 表格是否显示
+                type: Boolean,
+                default: false
+            }
+        },
         data() {
             return {
                 // 声母
@@ -85,35 +99,39 @@ import { log } from 'util';
                 sevenRow: [
                     'īng', 'íng', 'ǐng', 'ìng', 'ing', 'ōng', 'óng', 'ǒng', 'òng', 'ong',  'ǖn', 'ǘn', 'ǚn', 'ǜn', 'ün', 'ūn', 'ún', 'ǔn', 'ùn', 'un',
                 ],
-                pinyin: '', // 输入的拼音
-                word: '', // 汉字           
+                inputValue: '', // 输入的拼音
             }
         },
         watch: {
-            
+            isPinYinTableShow(val) {
+                if (this.focusList.content) {
+                    // 修改时拼音
+                    this.inputValue = this.focusList.content;
+                }
+            },
         },
         methods: {
             getPhonetic(item) {
-                this.pinyin += item;
+                this.inputValue += item;
             },
             // 确认选择
             submitData() {
-                if (this.pinyin.length && this.word.length) {
-                    if (this.word.length > 1) { this.$message.error('只能输入一个汉字'); return; }
-                    this.$emit('getPinyin', {'pinyin':this.pinyin, 'word': this.word});
+                if (this.inputValue.length) {
+                    this.$emit('getPinyin', this.inputValue);
                 }else {
-                    this.$message.error('请输入拼音或汉字！')
+                    this.$message.error('请选择拼音！')
                 }
-                this.pinyin = '';
-                this.word = '';
+                this.inputValue = '';
             },
             // 重置拼音
             resetInfo() {
-                this.pinyin = '';
+                this.inputValue = '';
             }
         },
         created() {
-            
+            if (this.focusList.content) {
+                this.inputValue = this.focusList.content;
+            }
         }
     }
 </script>
@@ -158,4 +176,6 @@ import { log } from 'util';
             line-height: 3;
         }
     }
+
 </style>
+
