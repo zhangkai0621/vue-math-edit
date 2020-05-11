@@ -33,32 +33,32 @@
 1. `public/index.html`文件中引入相关 js 文件，其中配置 UEditor 和 MaehJax
 ```
 <script type="text/javascript">
-        window.onload = () => {
-            var ue = UE.getEditor('UEditor'); // 加载编辑器容器 <div id="UEditor"></div>
-            if (MathJax) {
-                // Mathjax 配置项
-                MathJax.Hub.Config({
-                    jax: ["input/TeX", "output/HTML-CSS", "output/PreviewHTML"], //输出格式配置：latex 解析为 DOM结构
-                    tex2jax: {
-                        inlineMath: [
-                            ['$', '$']
-                        ],
-                        displayMath: [
-                            ['$$', '$$'],
-                            ["\\[", "\\]"]
-                        ]
-                    },
-                    "HTML-CSS": {
-                        showMathMenu: false, // 隐藏右键菜单展示
-                        linebreaks: {
-                            automatic: true, //超长公式换行处理（默认是false不换行）
-                            width: "80%" //设置换行的点，默认是遇到等号=换行
-                        }
-                    },
-                });
-            }
+    window.onload = () => {
+        var ue = UE.getEditor('UEditor'); // 加载编辑器容器 <div id="UEditor"></div>
+        if (MathJax) {
+            // Mathjax 配置项
+            MathJax.Hub.Config({
+                jax: ["input/TeX", "output/HTML-CSS", "output/PreviewHTML"], //输出格式配置：latex 解析为 DOM结构
+                tex2jax: {
+                    inlineMath: [
+                        ['$', '$']
+                    ],
+                    displayMath: [
+                        ['$$', '$$'],
+                        ["\\[", "\\]"]
+                    ]
+                },
+                "HTML-CSS": {
+                    showMathMenu: false, // 隐藏右键菜单展示
+                    linebreaks: {
+                        automatic: true, //超长公式换行处理（默认是false不换行）
+                        width: "80%" //设置换行的点，默认是遇到等号=换行
+                    }
+                },
+            });
         }
-    </script>
+    }
+</script>
 ```
 
 2. 如果需要编辑器的更多工具，在 `public/ueditor/ueditor.config.js` 中查找`toolbars`进行相关配置。
