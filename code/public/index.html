@@ -7,15 +7,25 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>数学编辑器</title>
-    <!-- 配置文件 -->
-    <script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
-    <!-- 编辑器源码文件 -->
-    <script type="text/javascript" src="/ueditor/ueditor.all.js"></script>
+
     <!-- 数学编辑器公式渲染 -->
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" charset="utf-8" src="/ueditor/kityformula-plugin/addKityFormulaDialog.js"></script>
-    <script type="text/javascript" charset="utf-8" src="/ueditor/kityformula-plugin/getKfContent.js"></script>
-    <script type="text/javascript" charset="utf-8" src="/ueditor/kityformula-plugin/defaultFilterFix.js"></script>
+    <link rel="stylesheet" href="/assets/styles/base.css">
+    <link rel="stylesheet" href="/assets/styles/ui.css">
+    <link rel="stylesheet" href="/assets/styles/scrollbar.css">
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="/dev-lib/jquery-1.11.0.min.js"></script>
+    <script src="/dev-lib/kitygraph.all.js"></script>
+    <script src="/dev-lib/kity-formula-render.all.js"></script>
+    <script src="/dev-lib/kity-formula-parser.all.min.js"></script>
+    <script src="/dev-lib/dev-define.js"></script>
+    <script>
+        inc.config({
+            base: '/src'
+        });
+    </script>
+    <script src="/dev-lib/exports.js"></script>
+    <script src="/dev-lib/start.js"></script>
+    <script src="/dev-lib/dev-start.js"></script>
 
 </head>
 

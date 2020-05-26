@@ -5,12 +5,12 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-      path: '/',
-      name: 'UEditor',
-      component: () => {
-          return import ('../views/UEditor.vue')
-      }
-  }
+    path: '/',
+    name: 'kfEditor',
+    component: () => {
+        return import ('../views/Editor.vue')
+    }
+}
 ]
 
 const router = new VueRouter({

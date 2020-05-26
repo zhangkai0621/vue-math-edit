@@ -2,7 +2,7 @@
  * @Description: 拼音编辑
  * @Author: zhangkai
  * @Date: 2020-04-20 08:58:52
- * @LastEditTime: 2020-05-08 16:51:47
+ * @LastEditTime: 2020-05-17 14:18:03
  * @LastEditors: zhangkai
  -->
 <!--
@@ -117,7 +117,8 @@
             // 确认选择
             submitData() {
                 if (this.inputValue.length) {
-                    this.$emit('getPinyin', this.inputValue);
+                    const content = this.inputValue;
+                    this.$emit('getPinyin', content);
                 }else {
                     this.$message.error('请选择拼音！')
                 }
