@@ -1,5 +1,5 @@
 ### 一，使用方式
-1. 使用 `npm install` 安装依赖
+1. 在 code 目录下，使用 `npm install` 安装依赖
 2. 在 code 目录下，使用`npm run serve`启动项目
 3. 项目默认监听 8080 端口
 
